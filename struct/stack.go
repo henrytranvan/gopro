@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 type stack struct {
 	data []interface{}
@@ -28,6 +31,22 @@ func (s stack) print() {
 	}
 }
 
+func (s stack) length() int {
+	return s.top
+}
+
+func (s *stack) clear() {
+	s.top = 0
+	s.data = []interface{}{}
+}
+
+func (s stack) peek() interface{} {
+	if len(s.data) > 0 {
+		return s.data[s.top-1]
+	}
+	return nil
+}
+
 func main() {
 	s := stack{}
 	s.push(23)
@@ -35,7 +54,32 @@ func main() {
 	s.push(45)
 	s.push(65)
 	s.print()
-	number := s.pop()
-	fmt.Println(number)
+	numbers := s.pop()
+	fmt.Println(numbers)
 	s.print()
+
+	number := 19
+
+	fmt.Printf("Number %d converted to base %d is %s\n", number, 2, numberTransformBase(number, 2))
+	fmt.Printf("Number %d converted to base %d is %s\n", number, 8, numberTransformBase(number, 8))
+
+}
+
+func numberTransformBase(number int, base int) string {
+	s := stack{}
+	for {
+		s.push(number % base)
+		number = number / base
+
+		if number <= 0 {
+			break
+		}
+	}
+	converted := ""
+
+	for s.length() > 0 {
+		converted = converted + strconv.Itoa(s.pop().(int))
+	}
+
+	return converted
 }
